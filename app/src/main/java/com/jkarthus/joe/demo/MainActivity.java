@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /**
- * 主页Activity
+ * 主页界面
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
