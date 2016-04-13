@@ -16,6 +16,8 @@
 
 package com.android.volley;
 
+import java.util.Map;
+
 /**
  * Encapsulates a parsed response for delivery.
  *
@@ -27,6 +29,16 @@ public class Response<T> {
     public interface Listener<T> {
         /** Called when a response is received. */
         public void onResponse(T response);
+
+        /**
+         *
+         * 返回数据和Headers的Set-Cookie和Cookie
+         *
+         * @param response 返回的数据
+         * @param setCookies    Headers的Set-Cookie
+         * @param cookies   Headers的Cookie
+         */
+        public void onResponse(T response, Map<String, String> setCookies, String cookies);
     }
 
     /** Callback interface for delivering error responses. */

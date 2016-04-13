@@ -29,6 +29,7 @@ import com.android.volley.VolleyError;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Helper that handles loading and caching images from remote URLs.
@@ -253,6 +254,11 @@ public class ImageLoader {
             @Override
             public void onResponse(Bitmap response) {
                 onGetImageSuccess(cacheKey, response);
+            }
+
+            @Override
+            public void onResponse(Bitmap response, Map<String, String> setCookies, String cookies) {
+
             }
         }, maxWidth, maxHeight, scaleType, Config.RGB_565, new ErrorListener() {
             @Override
