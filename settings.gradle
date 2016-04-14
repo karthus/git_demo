@@ -1,1 +1,2 @@
-include ':app', ':JVolley'
+include ':app'
+include ':JVolley'

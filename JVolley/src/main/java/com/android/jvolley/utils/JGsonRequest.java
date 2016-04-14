@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class JGsonRequest<T> extends BaseRequest<T> {
 
-    protected JGsonRequest(Context context) {
+    public JGsonRequest(Context context) {
         super(context);
     }
 
@@ -85,32 +85,5 @@ public class JGsonRequest<T> extends BaseRequest<T> {
      */
     public void post(String url, Map<String, String> params, String cookies, Class<T> clazz, final CallBackListener<T> callBackListener) {
         this.defaultRequest(Request.Method.POST, url, params, null, null, cookies, true, clazz, callBackListener);
-    }
-
-    /**
-     * POST 请求, Body为null, callbackCookie为true
-     *
-     * @param url 链接
-     * @param params 请求参数
-     * @param header header参数
-     * @param cookies   请求时需要的Cookies, 这个Cookies是会默认put到header请求的
-     * @param clazz 数据的实体类
-     * @param callBackListener 请求结果反馈的监听方法
-     */
-    public void post(String url, Map<String, String> params, Map<String, String> header, String cookies, Class<T> clazz,
-                    final CallBackListener<T> callBackListener) {
-        this.defaultRequest(Request.Method.POST, url, params, null, header, cookies, true, clazz, callBackListener);
-    }
-
-    /**
-     * POST 请求登录, Body为null, params为null, callbackCookie为true
-     *
-     * @param url 链接
-     * @param cookies   请求时需要的Cookies, 这个Cookies是会默认put到header请求的
-     * @param clazz 数据的实体类
-     * @param callBackListener 请求结果反馈的监听方法
-     */
-    public void postLogin(String url, byte[] body, String cookies, Class<T> clazz, final CallBackListener<T> callBackListener) {
-        this.defaultRequest(Request.Method.POST, url, null, body, null, cookies, true, clazz, callBackListener);
     }
 }

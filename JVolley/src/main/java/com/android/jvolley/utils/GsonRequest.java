@@ -24,11 +24,11 @@ import java.util.regex.Pattern;
  */
 public class GsonRequest<T> extends Request<T> {
 
-    private static final String KEY_SESSION_ID = "session_id";
+    public static final String KEY_SESSION_ID = "session_id";
 
-    private static final String KEY_VERIFICATION = "verification";
+    public static final String KEY_VERIFICATION = "verification";
 
-    private static final String KEY_COOKIE = "Cookie";
+    public static final String KEY_COOKIE = "Cookie";
 
     /** 请求返回的结果监听器 */
     private Response.Listener<T> resultListener = null;
@@ -62,11 +62,10 @@ public class GsonRequest<T> extends Request<T> {
 
 
     static {
-         // 设置访问服务器时必须传递的参数，密钥等
-         // 例如：
-         // mHeader.put("APP-Key", "LBS-AAA");
-         // mHeader.put("APP-Secret", "ad12msa234das232in");
-        mHeader.put(KEY_COOKIE, mCookies);
+        // 设置访问服务器时必须传递的参数，密钥等
+        // 例如：
+        // mHeader.put("APP-Key", "LBS-AAA");
+        // mHeader.put("APP-Secret", "ad12msa234das232in");
     }
 
     /**
@@ -81,7 +80,6 @@ public class GsonRequest<T> extends Request<T> {
         super(method, url , errorListener);
         this.mClass = clazz;
         this.isCallbackCookie = false;
-        this.setCookies("");
         this.bodyData = null;
     }
 
@@ -163,7 +161,8 @@ public class GsonRequest<T> extends Request<T> {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        if (mHeader != null && mHeader.size() > 0) {
+        if (mHeader != null) {
+            mHeader.put(KEY_COOKIE, mCookies);
             return mHeader;
         } else {
             return super.getHeaders();
