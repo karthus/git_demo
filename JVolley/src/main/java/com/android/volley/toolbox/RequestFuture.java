@@ -20,6 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -139,6 +140,13 @@ public class RequestFuture<T> implements Future<T>, Response.Listener<T>,
 
     @Override
     public synchronized void onResponse(T response) {
+        mResultReceived = true;
+        mResult = response;
+        notifyAll();
+    }
+
+    @Override
+    public void onResponse(T response, Map<String, String> setCookies, String cookies) {
         mResultReceived = true;
         mResult = response;
         notifyAll();

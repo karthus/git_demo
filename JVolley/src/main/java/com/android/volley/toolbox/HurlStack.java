@@ -119,9 +119,33 @@ public class HurlStack implements HttpStack {
         if (hasResponseBody(request.getMethod(), responseStatus.getStatusCode())) {
             response.setEntity(entityFromConnection(connection));
         }
+
+//        // 默认方法
+//        for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
+//            if (header.getKey() != null) {
+//                Header h = new BasicHeader(header.getKey(), header.getValue().get(0));
+//                response.addHeader(h);
+//            }
+//        }
+
+        // 修改后的方法
         for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
             if (header.getKey() != null) {
-                Header h = new BasicHeader(header.getKey(), header.getValue().get(0));
+                Header h = null;
+                // 获取多个Set-Cookie
+                // 如果是cookie则保存为name = Set-Cookie + 序号，保证key不同
+                if (header.getKey().equals("Set-Cookie")) {
+                    List<String> headerList = (List) header.getValue();
+                    for (int i = 0; i < headerList.size(); i++) {
+                        String name = String.valueOf(header.getKey() + i);
+                        String value = String.valueOf(header.getValue().get(i));
+                        h = new BasicHeader(name, value);
+                        response.addHeader(h);
+                    }
+                } else {
+                    // 否则使用默认的
+                    h = new BasicHeader(header.getKey(), header.getValue().get(0));
+                }
                 response.addHeader(h);
             }
         }
