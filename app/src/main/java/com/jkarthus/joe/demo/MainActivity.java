@@ -1,23 +1,42 @@
 package com.jkarthus.joe.demo;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.jkarthus.joe.demo.download.DownloadUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * 主页Activity
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private String TAG = MainActivity.class.getSimpleName();
+
+    private TextView tvText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +63,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        tvText = (TextView) findViewById(R.id.text);
     }
 
     @Override
@@ -72,6 +93,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            // 实现调用系统下载工具下载
+            String url = "http://s3-qianlu.b0.upaiyun.com/androidqudao1_apk/QianDeer_androidqudao1_v1.0.0_20160512145512.apk";
+            DownloadUtils.executeDownload(MainActivity.this, url);
             return true;
         }
 
@@ -102,5 +126,81 @@ public class MainActivity extends AppCompatActivity
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    protected File downLoadFile(String httpUrl) {
+        // TODO Auto-generated method stub
+        final String fileName = "updata.apk";
+        String path = Environment.getExternalStorageDirectory().getPath() + "/update/";
+        File tmpFile = new File(path);
+        if (!tmpFile.exists()) {
+            tmpFile.mkdir();
+        }
+        final File file = new File(path + fileName);
+
+        HttpURLConnection conn = null;
+        InputStream is = null;
+        FileOutputStream fos = null;
+        try {
+            URL url = new URL(httpUrl);
+            try {
+                conn = (HttpURLConnection) url.openConnection();
+                is = conn.getInputStream();
+                fos = new FileOutputStream(file);
+                byte[] buf = new byte[conn.getContentLength()];
+                conn.connect();
+                double count = 0;
+                if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
+                    while (count <= 100) {
+                        if (is != null) {
+                            int numRead = is.read(buf);
+                            if (numRead <= 0) {
+                                break;
+                            } else {
+                                fos.write(buf, 0, numRead);
+                            }
+
+                        } else {
+                            break;
+                        }
+
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        return file;
+    }
+
+    /**
+     * 打开APK程序代码
+     */
+    private void openFile(File file) {
+        // TODO Auto-generated method stub
+        Log.e("OpenFile", file.getName());
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file),
+                "application/vnd.android.package-archive");
+        startActivity(intent);
     }
 }
