@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jkarthus.joe.demo.download.DownloadUtils;
+import com.jkarthus.joe.demo.utils.ZipUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
+            getZipComment();
         } else if (id == R.id.nav_send) {
 
         }
@@ -126,6 +127,14 @@ public class MainActivity extends AppCompatActivity
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /** 提取ZIP压缩包的comment */
+    private void getZipComment() {
+        String path = getApplicationContext().getPackageResourcePath();
+        String versionAndChannel = ZipUtils.extractZipComment(path);
+        Log.e(TAG, versionAndChannel + "");
+        tvText.setText(versionAndChannel);
     }
 
     protected File downLoadFile(String httpUrl) {
